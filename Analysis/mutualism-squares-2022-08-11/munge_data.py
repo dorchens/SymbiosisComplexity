@@ -1,10 +1,10 @@
 import os.path
 import gzip
 
-folder = '../../Data/vertical-transmission-2-2022-08-08/'
+folder = '../../Data/host-symbiont-squares-2022-08-09/'
 
-verts = ["NONE", 0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
-reps = range(10,30)
+verts = [0.0, 1.0]
+reps = range(10,20)
 header = "vert,rep,update,partner,donate_calls,donated,earned,mutualism,attempts_horiz,success_horiz,attempts_vert,task_NOT,task_NAND,task_AND,task_ORN,task_OR,task_ANDN,task_NOR,task_XOR,task_EQU"
 
 outputFileName = "munged_tasks.csv"
@@ -14,12 +14,12 @@ outFile.write(header)
 
 for v in verts:
     for r in reps:
-            fname = f"{folder}Tasks_VT_{v}_SEED{r}.data"
+            fname = f"{folder}Tasks_VT{v}_SEED{r}.data"
             curFile = open(fname, 'r')
-            donatedFile = open(f"{folder}SymDonated_VT_{v}_SEED{r}.data", 'r')
-            donatedFile.readline() # skip header
-            mutualismFile = open(f"{folder}SymImpact_VT_{v}_SEED{r}.data", 'r')
-            transFile = open(f"{folder}TransmissionRates_VT_{v}_SEED{r}.data", 'r')
+            #donatedFile = open(f"{folder}SymDonated_VT{v}_SEED{r}.data", 'r')
+            #donatedFile.readline() # skip header
+            mutualismFile = open(f"{folder}SymImpact_VT{v}_SEED{r}.data", 'r')
+            transFile = open(f"{folder}TransmissionRates_VT{v}_SEED{r}.data", 'r')
             transFile.readline() # skip header
             #print(f"----VT_{v}_SEED{r}----")
             for line in curFile:
@@ -36,10 +36,10 @@ for v in verts:
                     splitline = line.split(',')
                     outstring1 = f"\n{vname},{r},{splitline[0]}"
                     # update,earned,calls,donated
-                    dLine = donatedFile.readline().split(',')
+                    #dLine = donatedFile.readline().split(',')
                     # update,attempts_horiz,success_horiz,attempts_vert
                     tLine = transFile.readline().split(',')
-                    outstring2 = f"{outstring1},symbiont,{dLine[2].strip()},{dLine[3].strip()},{dLine[1].strip()},{mutualism}"
+                    outstring2 = f"{outstring1},symbiont,{mutualism}"
                     outstring2 += f",{tLine[1].strip()},{tLine[2].strip()},{tLine[3].strip()}"
                     outstring1 += ",host,0,0,0,NA,NA,NA,NA"
                     for i in range(1, len(splitline), 2):
@@ -49,6 +49,7 @@ for v in verts:
                     if sym:
                         outFile.write(outstring2)
             curFile.close()
-            donatedFile.close()
+            #donatedFile.close()
             mutualismFile.close()
 outFile.close()
+
